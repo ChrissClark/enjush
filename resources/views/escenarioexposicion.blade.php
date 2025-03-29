@@ -3,12 +3,15 @@
 @section('title', 'Escenario de Exposición')
 
 @section('styles')
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" rel="stylesheet">
+
   <style>
     h1, h2, h3, h4, h5, h6 {
       color: #007bff;
     }
     #map {
-      height: 400px;
+      height: 800px;
       width: 100%;
     }
   </style>
@@ -35,62 +38,91 @@
       </div>
     </div>
   </header>
-  <!--  -->
-  <section class="my-3">
-    <div class="py-3">
-      <select class="form-select" aria-label="Default select example my-5">
-        <option selected>Open this select menu</option>
-        <option value="1">SLP</option>
-        <option value="2">Merida</option>
-        <option value="3">Villa de Reyes</option>
-      </select>
+  <!-- Estados y ciudades -->
+  <div class="row my-3">
+    <div class="col-md-6">
+      <div class="form-floating">
+        <select id="Estado" class="form-select" aria-label="Estado a consultar" onchange="muestaMunicipios()">
+          <option selected>Estado a consultar</option>
+          @foreach($estados as $estado)
+            <option value="{{$estado->id}}">{{$estado->nombre}}</option>
+          @endforeach
+        </select>
+        <label for="Estado">Selecciona un Estado</label>
+      </div>
     </div>
+    <div class="col-md-6">
+      <div class="form-floating">
+        <select id="Municipio" class="form-select" aria-label="Municipio a consultar">
+          <option selected>Municipio a consultar</option>
+          @foreach($estados as $estado)
+            <optgroup label="{{$estado->nombre}}" class="d-none" data-filter="{{$estado->id}}">
+              @foreach($estado->municipios as $municipio)
+                <option value="{{$municipio->id}}" class="d-none" data-filter="{{$municipio->idEstado}}">{{$municipio->nombre}}</option>
+              @endforeach
+            </optgroup>
+          @endforeach
+        </select>
+        <label for="Municipio">Selecciona un Municipio</label>
+      </div>
+    </div>
+  </div>
+  <!-- Sectores -->
+  <section class="my-3">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-todos-tab" data-bs-toggle="tab" data-bs-target="#nav-todos" type="button" role="tab" aria-controls="nav-todos" aria-selected="true">Todos</button>
-        <button class="nav-link" id="nav-cancerigenos-tab" data-bs-toggle="tab" data-bs-target="#nav-cancerigenos" type="button" role="tab" aria-controls="nav-cancerigenos" aria-selected="false">Cancerigenos</button>
-        <button class="nav-link" id="nav-Nefrotoxicos-tab" data-bs-toggle="tab" data-bs-target="#nav-Nefrotoxicos" type="button" role="tab" aria-controls="nav-Nefrotoxicos" aria-selected="false">Nefrotóxicos</button>
-        <button class="nav-link" id="nav-Neurotoxicos-tab" data-bs-toggle="tab" data-bs-target="#nav-Neurotoxicos" type="button" role="tab" aria-controls="nav-Neurotoxicos" aria-selected="false">Neurotóxicos</button>
-        <button class="nav-link" id="nav-indusriales-tab" data-bs-toggle="tab" data-bs-target="#nav-indusriales" type="button" role="tab" aria-controls="nav-indusriales" aria-selected="false">Quimicos Industriales</button>
-        <button class="nav-link" id="nav-comercial-tab" data-bs-toggle="tab" data-bs-target="#nav-comercial" type="button" role="tab" aria-controls="nav-comercial" aria-selected="false">Uso Comercial</button>
-        <button class="nav-link" id="nav-ocupacionales-tab" data-bs-toggle="tab" data-bs-target="#nav-ocupacionales" type="button" role="tab" aria-controls="nav-ocupacionales" aria-selected="false">Ocupacionales</button>
-        <button class="nav-link" id="nav-agua-tab" data-bs-toggle="tab" data-bs-target="#nav-agua" type="button" role="tab" aria-controls="nav-agua" aria-selected="false">Agua</button>
-        <button class="nav-link" id="nav-aire-tab" data-bs-toggle="tab" data-bs-target="#nav-aire" type="button" role="tab" aria-controls="nav-aire" aria-selected="false">Aire</button>
+        @foreach($sectores as $sector)
+          <button class="nav-link {{$loop->first ? 'active' : ''}}" id="nav-{{$sector->id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-{{$sector->id}}" type="button" role="tab" aria-controls="nav-{{$sector->id}}" aria-selected="false">{{$sector->nombre}}</button>
+        @endforeach
       </div>
     </nav>
     <!-- Contenido de las exposiciones -->
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="nav-todos" role="tabpanel" aria-labelledby="nav-todos-tab" tabindex="0">
-        <a href="{{route('perfil')}}">
-          <figure class="figure">
-            <img src="https://via.placeholder.com/300" class="figure-img img-fluid rounded-circle" alt="...">
-            <figcaption class="figure-caption fs-5 text-center">Antineoplastic Agents</figcaption>
-          </figure>
-        </a>
-      </div>
-      <div class="tab-pane fade" id="nav-cancerigenos" role="tabpanel" aria-labelledby="nav-cancerigenos-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-indusriales" role="tabpanel" aria-labelledby="nav-indusriales-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-comercial" role="tabpanel" aria-labelledby="nav-comercial-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-ocupacionales" role="tabpanel" aria-labelledby="nav-ocupacionales-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-agua" role="tabpanel" aria-labelledby="nav-agua-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-Nefrotoxicos" role="tabpanel" aria-labelledby="nav-Nefrotoxicos-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-Neurotoxicos" role="tabpanel" aria-labelledby="nav-Neurotoxicos-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="nav-aire" role="tabpanel" aria-labelledby="nav-aire-tab" tabindex="0">...</div>
+      <!-- Sectores con sus subsectores -->
+      @foreach($sectores as $sector)
+        <div class="tab-pane fade {{$loop->first ? 'show active' : ''}}" id="nav-{{$sector->id}}" role="tabpanel" aria-labelledby="nav-{{$sector->id}}-tab" tabindex="0">
+          @foreach($sector->subsectores as $subsector)
+            <a href="{{route('subsectores.show', [$subsector->id])}}">
+              <figure class="figure text-center m-2 m-xl-3" style="width:300px;">
+                <img src="https://via.placeholder.com/300" class="figure-img img-fluid rounded-circle" alt="{{$subsector->nombre}}">
+                <figcaption class="figure-caption fs-5 text-center">{{$subsector->nombre}}</figcaption>
+              </figure>
+            </a>
+          @endforeach
+        </div>
+      @endforeach
     </div>
   </section>
-  <!--  -->
+  <!-- Mapa -->
   <section>
-    <p>Resumen de resultados generales que se han encontrado con el analisis de los datos personales en el ecosistema.</p>
-    <ul>
-      <li>Posters</li>
-      <li>Tablas</li>
-      <li>Mapas</li>
-      <div class="py-3">
-        <div id="map"></div>
-      </div>
-      <li>Infogrfia</li>
-      <li>Documentos</li>
-    </ul>
+    <div class="">
+      <div id="map"></div>
+    </div>
+  </section>
+  <!-- Tabla de las empresas -->
+  <section>
+    <div class="table-responsive my-3">
+      <table id="Empresas" class="table table-striped" style="width:100%">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Municipio</th>
+            <th>Subsector</th>
+            <th>Sector</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($empresas as $empresa)
+            <tr>
+              <th>{{$empresa->nombre}}</th>
+              <th>{{$empresa->ubicacion()}}</th>
+              <th>{{$empresa->subsector->sector->nombre}}</th>
+              <th>{{$empresa->subsector->nombre}}</th>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
   </section>
   <!--  -->
   <section id="Carcinogens" class="py-3">
@@ -180,52 +212,60 @@
 @endsection
 
 @section('scripts')
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-    <script>
-        // Crear el mapa y centrarlo en coordenadas predeterminadas
-        var map = L.map('map').setView([22.1521, -100.9733], 12); // SLP como centro
+  <script>
+    // Crear el mapa y centrarlo en coordenadas predeterminadas
+    var map = L.map('map').setView([22.1521, -100.9733], 6); // SLP como centro
 
-        // Añadir capa de mapa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    // Añadir capa de mapa de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-        // Array de puntos desde la base de datos
-        var puntos = [];// @ json($puntos);
+    // Array de puntos desde la base de datos
+    var puntos = @json($empresas);
 
-        // Variable para almacenar las coordenadas del polígono
-        var coordenadasPoligono = [];
+    // Variable para almacenar las coordenadas del polígono
+    //var coordenadasPoligono = [];
 
-        // Recorrer los puntos y agregarlos como vértices del polígono
-        puntos.forEach(function(punto) {
-            //coordenadasPoligono.push([punto.latitud, punto.longitud]);
+    // Recorrer los puntos y agregarlos como vértices del polígono
+    puntos.forEach(function(punto) {
+        //coordenadasPoligono.push([punto.latitud, punto.longitud]);
 
-            // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
-            L.marker([punto.latitud, punto.longitud])
-                .addTo(map)
-                .bindPopup(`<strong>${punto.nombre}</strong><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
-        });
+        // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
+        L.circleMarker([punto.latitud, punto.longitud], {radius: 15})   //cambiar estos valores
+            .addTo(map)
+            .bindPopup(`<strong>${punto.id}</strong><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
+    });
 
-        // Crear el polígono con los puntos adyacentes
-        /*var poligono = L.polygon(coordenadasPoligono, {
-            color: 'blue', // Color del borde del polígono
-            fillColor: '#007bff', // Color de relleno
-            fillOpacity: 0.5 // Opacidad del relleno
-        }).addTo(map);*/
+    // Crear el polígono con los puntos adyacentes
+    /*var poligono = L.polygon(coordenadasPoligono, {
+        color: 'blue', // Color del borde del polígono
+        fillColor: '#007bff', // Color de relleno
+        fillOpacity: 0.5 // Opacidad del relleno
+    }).addTo(map);*/
 
-        coordenadasPoligono = [];
-        coordenadasPoligono.push([41.8781, -87.6298], [32.7767, -96.7970], [25.7617, -80.1918]);
-        // Crear el polígono con los puntos adyacentes
-        var poligono = L.polygon(coordenadasPoligono, {
-            color: 'red', // Color del borde del polígono
-            fillColor: '#7b00ff', // Color de relleno
-            fillOpacity: 0.5 // Opacidad del relleno
-        }).addTo(map);
+    //coordenadasPoligono = [];
+    //coordenadasPoligono.push([41.8781, -87.6298], [32.7767, -96.7970], [25.7617, -80.1918]);
+    // Crear el polígono con los puntos adyacentes
+    /*var poligono = L.polygon(coordenadasPoligono, {
+        color: 'red', // Color del borde del polígono
+        fillColor: '#7b00ff', // Color de relleno
+        fillOpacity: 0.5 // Opacidad del relleno
+    }).addTo(map);
+    */
+    // Opcional: centrarse en el polígono
+    //map.fitBounds(poligono.getBounds());
 
-        // Opcional: centrarse en el polígono
-        map.fitBounds(poligono.getBounds());
-
-    </script>
+  </script>
+  
+  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    $("#Empresas").DataTable();
+  </script>
 @endsection

@@ -41,7 +41,7 @@
           </div>
           <!-- Contenido -->
           <div class="col-md-10">
-            <h1 class="">Alimentos</h1>
+            <h1 class="">{{$subsector->nombre}}</h1>
             <div class="py-3">
               <h2 class="fs-4">Informacion genral</h2>
               <p>1-Bromopropane is an organic solvent that is a colourless or pale yellow liquid with a strong, sweet odour.[1]  It is used as a solvent in many industries, and in the past it has also been used as a chemical intermediate to produce other substances, including pesticides and fragrances.[2] 1-Bromopropane may also be referred to as propyl bromide or n-propyl bromide. There are numerous other synonyms and product names; see the Hazardous Substances Data Bank for more information.</p>
@@ -49,9 +49,9 @@
             <div class="py-3">
               <h2 class="fs-4">Sustancia que emite</h2>
               <div class="list-group list-group-flush">
-                <a href="{{route('sustancia.index')}}" class="list-group-item list-group-item-action">Sustancia 0</a>
-                <a href="{{route('sustancia.index')}}" class="list-group-item list-group-item-action">Sustancia 1</a>
-                <a href="{{route('sustancia.index')}}" class="list-group-item list-group-item-action">Sustancia 2</a>
+                @foreach($subsector->sustancias->unique('nombre')->sortBy('nombre') as $sustancia)
+                  <a href="{{route('sustancias.index')}}" class="list-group-item list-group-item-action">{{$sustancia->nombre}}</a>
+                @endforeach
               </div>
             </div>
             <div class="py-3">

@@ -152,48 +152,52 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
-        // Crear el mapa y centrarlo en coordenadas predeterminadas
-        var map = L.map('map').setView([22.1521, -100.9733], 5); // SLP como centro
+      // Crear el mapa y centrarlo en coordenadas predeterminadas
+      var map = L.map('map').setView([22.1521, -100.9733], 6); // SLP como centro
 
-        // Añadir capa de mapa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+      // Añadir capa de mapa de OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
 
-        // Array de puntos desde la base de datos
-        var puntos = @json($puntos);
+      // Array de puntos desde la base de datos
+      var puntos = @json($empresas);
 
-        // Variable para almacenar las coordenadas del polígono
-        var coordenadasPoligono = [];
+      // Variable para almacenar las coordenadas del polígono
+      var coordenadasPoligono = [];
 
-        // Recorrer los puntos y agregarlos como vértices del polígono
-        puntos.forEach(function(punto) {
-            coordenadasPoligono.push([punto.latitud, punto.longitud]);
+      // Recorrer los puntos y agregarlos como vértices del polígono
+      puntos.forEach(function(punto) {
+        coordenadasPoligono.push([punto.latitud, punto.longitud]);
 
-            // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
-            L.marker([punto.latitud, punto.longitud])
-                .addTo(map)
-                .bindPopup(`<strong>${punto.nombre}</strong><br>Tasa Cancer: <b>${punto.cancer}</b><br>porc CarenciaSS: <b>${punto.carenciaSS}</b><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
-        });
+        // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
+        L.marker([punto.latitud, punto.longitud])
+          .addTo(map)
+          .bindPopup(`<strong>${punto.nombre}</strong><br>Tasa Cancer: <b>${punto.cancer}</b><br>porc CarenciaSS: <b>${punto.carenciaSS}</b><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
+      });
+      
+      // Se lee un archivo json o geojson para poderlo graficar
+      var url = "http://localhost/salud/salud/public/js/SLP-coor.json";
+      fetch(url).then(res => res.json()).then(data => L.geoJSON(data).addTo(map))
 
-        // Crear el polígono con los puntos adyacentes
-        /*var poligono = L.polygon(coordenadasPoligono, {
-            color: 'blue', // Color del borde del polígono
-            fillColor: '#007bff', // Color de relleno
-            fillOpacity: 0.5 // Opacidad del relleno
-        }).addTo(map);
+      // Crear el polígono con los puntos adyacentes
+      /*var poligono = L.polygon(coordenadasPoligono, {
+          color: 'blue', // Color del borde del polígono
+          fillColor: '#007bff', // Color de relleno
+          fillOpacity: 0.5 // Opacidad del relleno
+      }).addTo(map);
 
-        coordenadasPoligono = [];
-        coordenadasPoligono.push([41.8781, -87.6298], [32.7767, -96.7970], [25.7617, -80.1918]);
-        // Crear el polígono con los puntos adyacentes
-        var poligono = L.polygon(coordenadasPoligono, {
-            color: 'red', // Color del borde del polígono
-            fillColor: '#7b00ff', // Color de relleno
-            fillOpacity: 0.5 // Opacidad del relleno
-        }).addTo(map);*/
+      coordenadasPoligono = [];
+      coordenadasPoligono.push([41.8781, -87.6298], [32.7767, -96.7970], [25.7617, -80.1918]);
+      // Crear el polígono con los puntos adyacentes
+      var poligono = L.polygon(coordenadasPoligono, {
+          color: 'red', // Color del borde del polígono
+          fillColor: '#7b00ff', // Color de relleno
+          fillOpacity: 0.5 // Opacidad del relleno
+      }).addTo(map);*/
 
-        // Opcional: centrarse en el polígono
-        map.fitBounds(poligono.getBounds());
+      // Opcional: centrarse en el polígono
+      //map.fitBounds(poligono.getBounds());
 
     </script>
 @endsection

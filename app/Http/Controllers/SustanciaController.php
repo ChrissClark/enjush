@@ -14,10 +14,9 @@ class SustanciaController extends Controller
      */
     public function index()
     {
-        //$sustancias = Sustancia::all();
-        $sustancias = [];
+        $sustancias = Sustancia::all();
 
-        return view('sustancia', ['sustancias' => $sustancias]);
+        return view('sustancias', ['sustancias' => $sustancias]);
     }
 
     /**
@@ -27,7 +26,15 @@ class SustanciaController extends Controller
      */
     public function create()
     {
-        //
+        $sustancia = new Sustancia();
+        $footer = '';
+        $cntnt = '<form action="'. route('sustancias.store').' "method="post">'.
+                    view('formSustancia', ['sustancia'=>$sustancia])->render() .'</form>';
+        
+        return response()->json([
+            'bodyContent' => $cntnt,
+            'footer' => $footer
+        ]);
     }
 
     /**
@@ -38,7 +45,10 @@ class SustanciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validateData();
+        Sustancia::create($data);
+
+        return back();
     }
 
     /**
@@ -60,7 +70,14 @@ class SustanciaController extends Controller
      */
     public function edit(Sustancia $sustancia)
     {
-        //
+        $footer = '';
+        $cntnt = '<form action="'. route('sustancias.update', $sustancia->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
+                    view('formSustancia', ['sustancia'=>$sustancia])->render() .'</form>';
+        
+        return response()->json([
+            'bodyContent' => $cntnt,
+            'footer' => $footer
+        ]);
     }
 
     /**
@@ -72,7 +89,10 @@ class SustanciaController extends Controller
      */
     public function update(Request $request, Sustancia $sustancia)
     {
-        //
+        $data = $this->validateData();
+        $sustancia->update($data);
+
+        return back();
     }
 
     /**
@@ -83,6 +103,15 @@ class SustanciaController extends Controller
      */
     public function destroy(Sustancia $sustancia)
     {
-        //
+        //$sustancia->delte();
+
+        //return back();
+    }
+
+    /** Valida los campos de una Sustancia. */
+    protected function validateData(){
+        return request()->validate([
+            'nombre' => 'required|string',
+        ]);
     }
 }

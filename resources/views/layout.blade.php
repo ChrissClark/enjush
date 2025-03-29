@@ -42,22 +42,21 @@
               <a class="nav-link" href="{{route('escenarioexposicion')}}">Escenario de Exposición</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{route('sustancia.index')}}">Casos de Estudio</a>
+              <a class="nav-link" href="#">Casos de Estudio</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Efectos en Salud
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Cancerigenos</a></li>
-                <li><a class="dropdown-item" href="#">Cancerigenos</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Cancerigenos</a></li>
-                <li><a class="dropdown-item" href="#">Cancerigenos</a></li>
+                <li><a class="dropdown-item" href="#">Cancer de mama</a></li>
+                <li><a class="dropdown-item" href="#">Leucemia</a></li>
+                <li><a class="dropdown-item" href="#">Enfermedad Renal</a></li>
+                <li><a class="dropdown-item" href="#">Enfermedades Neurologicas</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{route('sustancia.index')}}">Sustancias</a>
+              <a class="nav-link" href="{{route('sustancias.index')}}">Sustancias</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -67,15 +66,33 @@
                 <li><a class="dropdown-item" href="#">Anuncios</a></li>
                 <li><a class="dropdown-item" href="#">Solicitudes</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Publicaicones</a></li>
+                <li><a class="dropdown-item" href="{{route('recursos')}}">Publicaicones</a></li>
                 <li><a class="dropdown-item" href="#">Videos</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{route('recursos')}}"></a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="{{route('nosotros')}}">Nosotros</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Admin
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{route('empresas.index')}}">Empresas</a></li>
+                <li><a class="dropdown-item" href="{{route('evaluaciones.index')}}">Evaluaciones</a></li>
+                <li><a class="dropdown-item" href="{{route('matriza.index')}}">Matriz Ambiental</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{route('sustancias.index')}}">Sustancias</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{route('sectores.index')}}">Sectores</a></li>
+                <li><a class="dropdown-item" href="{{route('subsectores.index')}}">Subsectores</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{route('clasificaciones.index')}}">Clasificaciones</a></li>
+                <li><a class="dropdown-item" href="{{route('instituciones.index')}}">Instituciones</a></li>
+                <li><a class="dropdown-item" href="{{route('evaluadores.index')}}">Evaluadores</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{route('estados.index')}}">Ubicación</a></li>
+              </ul>
             </li>
             @if(Route::has('login'))
               @auth
@@ -112,7 +129,7 @@
     </nav>
 
     <!-- Content -->
-    <main class="container mt-4">
+    <main class="container my-4">
       @yield('content')
     </main>
 
@@ -149,6 +166,8 @@
     </footer>
     <!-- Boton arriba -->
     <span class="ir-arriba"><i class="fa-solid fa-angle-up"></i></span>
+
+    @include('modal')
 
     <!-- Custom Script -->
     @yield('scripts')
