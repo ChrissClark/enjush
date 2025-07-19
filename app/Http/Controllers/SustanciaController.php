@@ -112,6 +112,7 @@ class SustanciaController extends Controller
     protected function validateData(){
         return request()->validate([
             'nombre' => 'required|string',
+            'nombre' => 'nuallable|string',
         ]);
     }
 }

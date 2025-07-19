@@ -67,3 +67,27 @@ function muestraSubsectores(){
   $('#Subsector option[data-filter="'+idEstado+'"]').removeClass('d-none');
   $('#Subsector optgroup[data-filter="'+idEstado+'"]').removeClass('d-none');
 }
+
+
+function empresasMunicipio(){
+  var url = $('#Municipio').val();
+
+  data='_method=GET';
+  $.get(url, data, function(result) {
+    var tblEmpresas = $("#Empresas").DataTable();
+    tblEmpresas.clear();  //Elimina todos los renglones de la tabla
+    layerGroup.clearLayers(); //Limpia las capas del mapa
+    result.empresas.forEach(function(punto) {
+      L.circleMarker([punto.latitud, punto.longitud], {radius: 15})
+          .addTo(layerGroup)
+          .bindPopup(`<strong>${punto.id}</strong><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
+      tblEmpresas.row.add([
+        punto.nombre,
+        punto.municipio,
+        punto.subsector,
+        punto.sector,
+      ]);
+    });
+    tblEmpresas.draw();
+  });
+}

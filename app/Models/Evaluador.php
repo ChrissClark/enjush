@@ -10,7 +10,7 @@ class Evaluador extends Model
     use HasFactory;
 
     protected $table = "evaluadores";
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'descripcion'];
 
     /** Obtiene las evaluaciones que pertenecen a este evaluador */
     public function evaluaciones(){

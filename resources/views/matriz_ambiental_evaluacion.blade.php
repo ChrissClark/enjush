@@ -29,6 +29,9 @@
           <tr>
             <th>Sustancia</th>
             <th>Tipo Sustancia</th>
+            <th>Clasificaciones</th>
+            <th>Cancer</th>
+            <th>Edunogeno</th>
             <th>Matriz</th>
             <th class="text-start">valor ({{$evaluacion->unidad}})</th>
             <th></th>
@@ -39,6 +42,9 @@
             <tr>
               <td>{{$matriz->sustancia->nombre}}</td>
               <td>{{$matriz->id_sust_tipo ? $matriz->tipoSust->nombre : ""}}</td>
+              <td></td>
+              <td></td>
+              <td></td>
               <td>{{$matriz->matriz}}</td>
               <td class="text-start">{{$matriz->valor}}</td>
               <td class="text-center">

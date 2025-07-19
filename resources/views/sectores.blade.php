@@ -20,6 +20,7 @@
       <thead>
         <tr>
           <th>Nombre</th>
+          <th>Evaluador</th>
           <th></th>
         </tr>
       </thead>
@@ -27,6 +28,7 @@
         @foreach($sectores as $sector)
           <tr>
             <td>{{$sector->nombre}}</td>
+            <td></td>
             <td class="text-center">
               <div class="d-flex justify-content-center">
                 <button class="btn btn-outline-success btn-sm rounded me-2" type="button" onclick="modalGet('{{route('sectores.edit', $sector->id)}}', 'Editar Sector')"><i class="far fa-edit"></i></button>

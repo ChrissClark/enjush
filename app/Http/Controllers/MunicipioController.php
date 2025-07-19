@@ -118,4 +118,25 @@ class MunicipioController extends Controller
             'ageb' => 'nullable|string|max:45',
         ]);
     }
+
+    /**  */
+    public function municipoEmpresas($idMunicipio){
+        $municipio = Municipio::find($idMunicipio);
+        $empresas = [];
+
+        foreach($municipio->empresas as $empresa){
+            array_push($empresas, [
+                'nombre' => $empresa->nombre,
+                'municipio' => $empresa->ubicacion(),
+                'sector' => $empresa->subsector->sector->nombre,
+                'subsector' => $empresa->subsector->nombre,
+                'longitud' => $empresa->longitud,
+                'latitud' => $empresa->latitud,
+            ]);
+        }
+        
+        return response()->json([
+            'empresas' => $empresas,
+        ]);
+    }
 }

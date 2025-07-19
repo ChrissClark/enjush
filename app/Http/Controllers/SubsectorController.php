@@ -54,7 +54,7 @@ class SubsectorController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Muesta el perfil de un subsector especifico.
      *
      * @param  \App\Models\Subsector  $subsector
      * @return \Illuminate\Http\Response

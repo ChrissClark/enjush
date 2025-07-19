@@ -53,12 +53,12 @@
     </div>
     <div class="col-md-6">
       <div class="form-floating">
-        <select id="Municipio" class="form-select" aria-label="Municipio a consultar">
+        <select id="Municipio" class="form-select" aria-label="Municipio a consultar" onchange="empresasMunicipio()">
           <option selected>Municipio a consultar</option>
           @foreach($estados as $estado)
             <optgroup label="{{$estado->nombre}}" class="d-none" data-filter="{{$estado->id}}">
               @foreach($estado->municipios as $municipio)
-                <option value="{{$municipio->id}}" class="d-none" data-filter="{{$municipio->idEstado}}">{{$municipio->nombre}}</option>
+                <option value="{{route('municipoEmpresas', $municipio->id)}}" class="d-none" data-filter="{{$municipio->idEstado}}">{{$municipio->nombre." (".$municipio->empresas->count().")"}}</option>
               @endforeach
             </optgroup>
           @endforeach
@@ -81,7 +81,7 @@
       <!-- Sectores con sus subsectores -->
       @foreach($sectores as $sector)
         <div class="tab-pane fade {{$loop->first ? 'show active' : ''}}" id="nav-{{$sector->id}}" role="tabpanel" aria-labelledby="nav-{{$sector->id}}-tab" tabindex="0">
-          @foreach($sector->subsectores as $subsector)
+          @foreach($sector->subsectores->sortBy('nombre') as $subsector)
             <a href="{{route('subsectores.show', [$subsector->id])}}">
               <figure class="figure text-center m-2 m-xl-3" style="width:300px;">
                 <img src="https://via.placeholder.com/300" class="figure-img img-fluid rounded-circle" alt="{{$subsector->nombre}}">
@@ -224,6 +224,9 @@
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
+    //Anade una capa para los marcadores
+    var layerGroup = L.layerGroup().addTo(map);
+
     // Array de puntos desde la base de datos
     var puntos = @json($empresas);
 
@@ -236,7 +239,7 @@
 
         // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
         L.circleMarker([punto.latitud, punto.longitud], {radius: 15})   //cambiar estos valores
-            .addTo(map)
+            .addTo(layerGroup)
             .bindPopup(`<strong>${punto.id}</strong><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
     });
 

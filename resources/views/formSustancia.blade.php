@@ -7,6 +7,15 @@
     <strong>{{ $message }}</strong>
   </span>
 @enderror
+<div class="form-floating mb-3">
+  <textarea id="Descripcion" name="Descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$sustancia->descripcion ?? old('descripcion')}}</textarea>
+  <label for="Descripcion">Descripción</label>
+</div>
+@error('descripcion')
+  <span class="invalid-feedback" role="alert">
+    <strong>{{ $message }}</strong>
+  </span>
+@enderror
 <div class="text-center mt-2">
     <button class="btn btn-outline-primary btn-sm">{{empty($sustancia->id) ? "Crear" : "Actualizar"}}</button>
 </div>

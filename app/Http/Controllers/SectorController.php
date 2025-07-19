@@ -121,15 +121,17 @@ class SectorController extends Controller
             'descripcion' => 'nullable|string',
         ]);
     }
+    
 
     public function escenariosExpocicion(){
         /*//dd(Empresa::select('id', 'nombre', 'idMunicipio', 'idSubsector', 'latitud', 'longitud')->get()->toJSON());
         return view('map');*/
         $estados = Estado::all();
         $sectores = Sector::all();
-        $idsSubsectores = Subsector::whereIn('idSector', $sectores->pluck('id'))->pluck('id');
-        //$puntos = Punto::whereIn('idSubsector', $idsSubsectores)->get();
         $empresas = Empresa::all();
+        //$concentraciones = DB::select();
+        //$idsSubsectores = Subsector::whereIn('idSector', $sectores->pluck('id'))->pluck('id');
+        //$puntos = Punto::whereIn('idSubsector', $idsSubsectores)->get();
 
         return view('escenarioexposicion', ['estados' => $estados, 'sectores' => $sectores, 'empresas' => $empresas]); 
     }

@@ -51,6 +51,8 @@ Route::get('evaluaciones/{idEvaluacion}/matriz', [MatrizAmbientalController::cla
 Route::resource('instituciones', InstitucionController::class);
 Route::resource('clasificaciones', ClasificacionController::class);
 
+Route::get('municipo/{idMunicipio}/empresas', [MunicipioController::class, 'municipoEmpresas'])->name('municipoEmpresas');
+
 Route::get('/api/getPuntos', [SectorController::class, 'getPuntos']);
 
 

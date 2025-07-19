@@ -8,7 +8,7 @@
   </span>
 @enderror
 <div class="form-floating mb-3">
-  <textarea id="Descripcion" name="Descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$sector->descripcion}}</textarea>
+  <textarea id="Descripcion" name="Descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$sector->descripcion ?? old('descripcion')}}</textarea>
   <label for="Descripcion">Descripción</label>
 </div>
 @error('descripcion')

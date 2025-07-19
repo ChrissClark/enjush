@@ -19,6 +19,9 @@
       <thead>
         <tr>
           <th>Nombre</th>
+          <th>Clasificaciones</th>
+          <th>Cancer</th>
+          <th>Edunogeno</th>
           <th></th>
         </tr>
       </thead>
@@ -26,6 +29,9 @@
         @foreach($sustancias as $sustancia)
           <tr>
             <td>{{$sustancia->nombre}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td class="text-center">
               <div class="d-flex justify-content-center">
                 <button class="btn btn-outline-success btn-sm rounded me-2" type="button" onclick="modalGet('{{route('sustancias.edit', $sustancia->id)}}', 'Editar Sustancia')"><i class="far fa-edit"></i></button>

@@ -10,7 +10,7 @@ class Institucion extends Model
     use HasFactory;
 
     protected $table = "instituciones";
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'descripcion'];
     public $timestamps = false;
 
     /** Obtiene las clasificaciones de esta institucion */
