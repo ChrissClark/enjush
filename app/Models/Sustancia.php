@@ -10,7 +10,7 @@ class Sustancia extends Model
     use HasFactory;
 
     protected $table = "sustancias";
-    protected $fillable = ['nombre', 'descripcion'];
+    protected $fillable = ['nombre', 'descripcion', 'pdf_path'];
     public $timestamps = false;
 
     /** Obtiene todas las matrices que se relaciona a una sustancia */

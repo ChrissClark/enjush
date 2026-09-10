@@ -16,7 +16,7 @@ class EvaluadorController extends Controller
     {
         $evaluadores = Evaluador::all();
 
-        return view('evaluadores', ['evaluadores' => $evaluadores]);
+        return view('evaluadores.evaluadores', ['evaluadores' => $evaluadores]);
     }
 
     /**
@@ -29,7 +29,7 @@ class EvaluadorController extends Controller
         $evaluador = new Evaluador();
         $footer = '';
         $cntnt = '<form action="'. route('evaluadores.store').' "method="post">'.
-                    view('formEvaluador', ['evaluador'=>$evaluador])->render() .'</form>';
+                    view('evaluadores.formEvaluador', ['evaluador'=>$evaluador])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -73,7 +73,7 @@ class EvaluadorController extends Controller
         $evaluador = Evaluador::find($idEvaluador);
         $footer = '';
         $cntnt = '<form action="'. route('evaluadores.update', $evaluador->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formEvaluador', ['evaluador'=>$evaluador])->render() .'</form>';
+                    view('evaluadores.formEvaluador', ['evaluador'=>$evaluador])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -103,17 +103,19 @@ class EvaluadorController extends Controller
      * @param  \App\Models\Evaluador  $evaluador
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Evaluador $evaluador)
+    public function destroy($idEvaluador)
     {
-        //$evaluador->delte();
+        $evaluador = Evaluador::find($idEvaluador);
+        $evaluador->delete();
 
-        //return back();
+        return back();
     }
 
     /** Valida los campos de un Evaluador. */
     protected function validateData(){
         return request()->validate([
             'nombre' => 'required|string',
+            'descripcion' => 'nullable|string',
         ]);
     }
 }

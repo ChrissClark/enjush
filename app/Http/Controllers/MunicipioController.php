@@ -29,7 +29,7 @@ class MunicipioController extends Controller
         $estados = Estado::all();
         $footer = '';
         $cntnt = '<form action="'. route('municipios.store').' "method="post">'.
-                    view('formMunicipio', ['municipio'=> $municipio, 'estados'=>$estados])->render() .'</form>';
+                    view('ubicacion.formMunicipio', ['municipio'=> $municipio, 'estados'=>$estados])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -45,7 +45,8 @@ class MunicipioController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->validateData();
+        $request->merge(['visible' => $request->has('visible') ? 1 : 0]);
+        $data = $this->validateData();dd($data);
         Municipio::create($data);
 
         return back();
@@ -73,7 +74,7 @@ class MunicipioController extends Controller
         $estados = Estado::all();
         $footer = '';
         $cntnt = '<form action="'. route('municipios.update', $municipio->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formMunicipio', ['municipio'=>$municipio, 'estados'=>$estados])->render() .'</form>';
+                    view('ubicacion.formMunicipio', ['municipio'=>$municipio, 'estados'=>$estados])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -90,6 +91,7 @@ class MunicipioController extends Controller
      */
     public function update(Request $request, Municipio $municipio)
     {
+        $request->merge(['visible' => $request->has('visible') ? 1 : 0]);
         $data = $this->validateData();
         $municipio->update($data);
 
@@ -109,17 +111,25 @@ class MunicipioController extends Controller
         return back();
     }
 
-    /** Valida los campos de un Municipio. */
+    /** Valida los campos de un Municipio, en caso de que no sean válidos regresa un mensaje de error. */
     protected function validateData(){
         return request()->validate([
             'nombre' => 'required|string',
+            'visible' => 'boolean',
             'idEstado' => 'required|integer',
             'cve_mun' => 'nullable|integer',
             'ageb' => 'nullable|string|max:45',
+        ],
+        [
+            'nombre.required' => 'El nombre del municipio es obligatorio.',
+            'idEstado.required' => 'El estado es obligatorio.',
+            'idEstado.integer' => 'El estado debe ser un número entero.',
+            'cve_mun.integer' => 'La clave del municipio debe ser un número entero.',
+            'ageb.max' => 'La AGEB no puede tener más de 45 caracteres.',
         ]);
     }
 
-    /**  */
+    /** Regresa una lista de empresas asociadas a un municipio. */
     public function municipoEmpresas($idMunicipio){
         $municipio = Municipio::find($idMunicipio);
         $empresas = [];

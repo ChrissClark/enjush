@@ -16,7 +16,7 @@ class InstitucionController extends Controller
     {
         $instituciones = Institucion::all();
 
-        return view('instituciones', ['instituciones' => $instituciones]);
+        return view('instituciones.instituciones', ['instituciones' => $instituciones]);
     }
 
     /**
@@ -29,7 +29,7 @@ class InstitucionController extends Controller
         $institucion = new Institucion();
         $footer = '';
         $cntnt = '<form action="'. route('instituciones.store').' "method="post">'.
-                    view('formInstitucion', ['institucion'=>$institucion])->render() .'</form>';
+                    view('instituciones.formInstitucion', ['institucion'=>$institucion])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -73,7 +73,7 @@ class InstitucionController extends Controller
         $institucion = Institucion::find($idInstitucion);
         $footer = '';
         $cntnt = '<form action="'. route('instituciones.update', $institucion->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formInstitucion', ['institucion'=>$institucion])->render() .'</form>';
+                    view('instituciones.formInstitucion', ['institucion'=>$institucion])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -103,17 +103,24 @@ class InstitucionController extends Controller
      * @param  \App\Models\Institucion  $institucion
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Institucion $institucion)
+    public function destroy($idInstitucion)
     {
-        //$institucion->delte();
+        $institucion = Institucion::find($idInstitucion);
+        $institucion->delete();
 
-        //return back();
+        return back();
     }
 
     /** Valida los campos de una Sustancia. */
     protected function validateData(){
         return request()->validate([
             'nombre' => 'required|string',
+            'descripcion' => 'nullable|string'
+        ],
+        [
+            'nombre.required' => 'El nombre de la institución es obligatorio.',
+            'nombre.string' => 'El nombre de la institución debe ser una cadena de texto.',
+            'descripcion.string' => 'La descripción de la institución debe ser una cadena de texto.'
         ]);
     }
 }

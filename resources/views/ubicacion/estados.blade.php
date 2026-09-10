@@ -18,6 +18,7 @@
               <tr>
                 <th>Nombre</th>
                 <th>Abreviacion</th>
+                <th class="text-center">Visible</th>
                 <th></th>
               </tr>
             </thead>
@@ -26,6 +27,13 @@
                 <tr>
                   <td>{{$estado->nombre}}</td>
                   <td>{{$estado->abreviacion}}</td>
+                  <td class="text-center">
+                    @if($estado->visible)
+                      <i class="fas fa-check text-success"></i>
+                    @else
+                      <i class="fas fa-times text-danger"></i>
+                    @endif
+                  </td>
                   <td class="text-center">                    
                     <button class="btn btn-outline-success btn-sm rounded" type="button" onclick="modalGet('{{route('estados.edit', $estado->id)}}', 'Editar Estado')"><i class="far fa-edit"></i></button>
                   </td>
@@ -47,6 +55,7 @@
             <thead>
               <tr>
                 <th>Nombre</th>
+                <th class="text-center">Visible</th>
                 <th>Estado</th>
                 <th>cve_muni</th>
                 <th>AGEB</th>
@@ -57,6 +66,13 @@
               @foreach($municipios as $municipio)
                 <tr>
                   <td>{{$municipio->nombre}}</td>
+                  <td class="text-center">
+                    @if($municipio->visible)
+                      <i class="fas fa-check text-success"></i>
+                    @else
+                      <i class="fas fa-times text-danger"></i>
+                    @endif
+                  </td>
                   <td>{{$municipio->estado->nombre}}</td>
                   <td>{{$municipio->cve_mun}}</td>
                   <td>{{$municipio->ageb}}</td>
@@ -65,8 +81,10 @@
                       <button class="btn btn-outline-success btn-sm rounded me-2" type="button" onclick="modalGet('{{route('municipios.edit', $municipio->id)}}', 'Editar Municipio')"><i class="far fa-edit"></i></button>
                       <form action="{{route('municipios.destroy', $municipio->id)}}" class="float-right" method="post">
                         @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger btn-sm rounded"><i class="fas fa-trash-alt"></i></button>
                         @csrf
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded delete-confirm-btn" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left" data-bs-html="true"
+                          title="Confirmar eliminación" 
+                          data-bs-content="Al eliminar este Municipio se perdera toda la información asociada. Quieres eliminar este municipio?<div class='mt-2 text-end'><button type='button' class='btn btn-sm btn-danger confirm-delete'>Si</button><button type='button' class='btn btn-sm btn-secondary ms-1 cancel-delete'>No</button></div>"><i class="fas fa-trash-alt"></i></button>
                       </form>
                     </div>
                   </td>
@@ -85,7 +103,49 @@
   <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
   
   <script>
-    $("#Estados").DataTable();
-    $("#Municipios").DataTable();
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (popoverTriggerEl) {
+        new bootstrap.Popover(popoverTriggerEl, {
+          container: 'body',
+          html: true,
+          sanitize: false
+        });
+      });
+
+      $("#Estados").DataTable();
+      $("#Municipios").DataTable();
+    });
+
+    document.addEventListener('click', function (event) {
+      const confirmButton = event.target.closest('.confirm-delete');
+      const cancelButton = event.target.closest('.cancel-delete');
+
+      if (confirmButton) {
+        event.preventDefault();
+        const popover = confirmButton.closest('.popover');
+        if (popover) {
+          const trigger = document.querySelector('[aria-describedby="' + popover.id + '"]');
+          if (trigger) {
+            const form = trigger.closest('form');
+            if (form) {
+              form.submit();
+            }
+          }
+        }
+      }
+
+      if (cancelButton) {
+        const popover = cancelButton.closest('.popover');
+        if (popover) {
+          const trigger = document.querySelector('[aria-describedby="' + popover.id + '"]');
+          if (trigger) {
+            const instance = bootstrap.Popover.getInstance(trigger);
+            if (instance) {
+              instance.hide();
+            }
+          }
+        }
+      }
+    });
   </script>
 @endsection

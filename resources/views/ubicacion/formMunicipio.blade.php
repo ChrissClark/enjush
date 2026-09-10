@@ -1,6 +1,17 @@
+<div class="form-check form-check-reverse mb-2">
+  <input class="form-check-input" type="checkbox" value="" id="municipio_visible" name="visible" {{(isset($municipio) && $municipio->visible) || old('visible') ? 'checked' : ''}}>
+  <label class="form-check-label" for="municipio_visible">
+    Visualizar Municipio
+  </label>
+</div>
+@error('visible')
+  <span class="invalid-feedback" role="alert">
+    <strong>{{ $message }}</strong>
+  </span>
+@enderror
 <div class="form-floating mb-3">
   <input type="text" name="nombre" class="form-control" id="Nombre" placeholder="Nombre" maxlength="50" value="{{$municipio->nombre ?? old('nombre')}}">
-  <label for="Nombre">Nombre</label>
+  <label for="Nombre">Nombre del Municipio</label>
 </div>
 @error('nombre')
   <span class="invalid-feedback" role="alert">

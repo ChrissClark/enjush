@@ -16,9 +16,7 @@
     
     <div class="d-flex justify-content-between align-items-center">
       <h2 class="">Empresas</h2>
-      <div>
-        <button class="btn btn-outline-primary btn-sm rounded" type="button" onclick="modalGet('{{route('empresas.create')}}', 'Crear empresa')">Agregar Empresa</button>
-      </div>
+      <button class="btn btn-outline-primary btn-sm rounded" type="button" onclick="modalGet('{{route('empresas.create')}}', 'Crear empresa')">Agregar Empresa</button>
     </div>
     <div class="table-responsive">
       <table id="Empresas" class="table table-striped" style="width:100%">
@@ -47,8 +45,10 @@
                   <button class="btn btn-outline-success btn-sm rounded me-2" type="button" onclick="modalGet('{{route('empresas.edit', $empresa->id)}}', 'Editar Empresa')"><i class="far fa-edit"></i></button>
                   <form action="{{route('empresas.destroy', $empresa->id)}}" class="float-right" method="post">
                     @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger btn-sm rounded"><i class="fas fa-trash-alt"></i></button>
                     @csrf
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded delete-confirm-btn" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left" data-bs-html="true"
+                      title="Confirmar eliminación" 
+                      data-bs-content="Quieres eliminar esta empresa?<div class='mt-2 text-end'><button type='button' class='btn btn-sm btn-danger confirm-delete'>Si</button><button type='button' class='btn btn-sm btn-secondary ms-1 cancel-delete'>No</button></div>"><i class="fas fa-trash-alt"></i></button>
                   </form>
                 </div>
               </td>
@@ -63,7 +63,7 @@
 @section('scripts')
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
   <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+  <!-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script> -->
   <script src="https://cdn.datatables.net/select/3.0.0/js/dataTables.select.js"></script>
   <script src="https://cdn.datatables.net/select/3.0.0/js/select.dataTables.js"></script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -114,5 +114,47 @@
             y: e[1]
         }));
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (popoverTriggerEl) {
+        new bootstrap.Popover(popoverTriggerEl, {
+          container: 'body',
+          html: true,
+          sanitize: false
+        });
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      const confirmButton = event.target.closest('.confirm-delete');
+      const cancelButton = event.target.closest('.cancel-delete');
+
+      if (confirmButton) {
+        event.preventDefault();
+        const popover = confirmButton.closest('.popover');
+        if (popover) {
+          const trigger = document.querySelector('[aria-describedby="' + popover.id + '"]');
+          if (trigger) {
+            const form = trigger.closest('form');
+            if (form) {
+              form.submit();
+            }
+          }
+        }
+      }
+
+      if (cancelButton) {
+        const popover = cancelButton.closest('.popover');
+        if (popover) {
+          const trigger = document.querySelector('[aria-describedby="' + popover.id + '"]');
+          if (trigger) {
+            const instance = bootstrap.Popover.getInstance(trigger);
+            if (instance) {
+              instance.hide();
+            }
+          }
+        }
+      }
+    });
   </script>
 @endsection

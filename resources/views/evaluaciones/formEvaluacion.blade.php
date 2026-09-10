@@ -50,7 +50,7 @@
 @php($mtzEvaluadora = $evaluacion->matriz ? implode(", ", json_decode($evaluacion->matriz)) : null)
 <div class="form-floating mb-3">
   <input type="text" name="matriz" class="form-control" id="Matriz" placeholder="Matriz a Evaluar" maxlength="45" value="{{$mtzEvaluadora ?? old('matriz')}}">
-  <label for="Matriz">Matriz a Evaluar (separa con comas)</label>
+  <label for="Matriz">Matriz a Evaluar (separa con comas ej. "A, B, C")</label>
 </div>
 @error('matriz')
   <span class="invalid-feedback" role="alert">

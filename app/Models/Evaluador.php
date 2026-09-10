@@ -11,6 +11,7 @@ class Evaluador extends Model
 
     protected $table = "evaluadores";
     protected $fillable = ['nombre', 'descripcion'];
+    public $timestamps = false;
 
     /** Obtiene las evaluaciones que pertenecen a este evaluador */
     public function evaluaciones(){

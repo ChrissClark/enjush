@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Municipio extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre', 'idEstado', 'cve_mun', 'ageb'];
+    protected $fillable = ['nombre', 'idEstado', 'cve_mun', 'ageb', 'visible'];
     public $timestamps = false;
 
     /** Obtiene el Estado del municipio */

@@ -6,13 +6,73 @@ $(document).ready(function(){
   });
 
   $(window).scroll(function(){
-	if( $(this).scrollTop() > 0 ){
-	  $('.ir-arriba').slideDown(300);
-	}else {
-	  $('.ir-arriba').slideUp(300);
-	}
+    if( $(this).scrollTop() > 0 ){
+      $('.ir-arriba').slideDown(300);
+    }else {
+      $('.ir-arriba').slideUp(300);
+    }
+  });
+
+  // Handle modal form submission via AJAX
+  $(document).on('submit', '#formModal form', function(e) {
+    e.preventDefault();
+    submitModalForm($(this));
   });
 });
+
+/** Submit form via AJAX and handle validation errors in modal
+ * 
+ * @param {jQuery} formElement The form element to submit
+ */
+function submitModalForm(formElement) {
+  const url = formElement.attr('action');
+  const method = formElement.attr('method') || 'POST';
+  const formData = new FormData(formElement[0]);
+
+  $.ajax({
+    url: url,
+    type: method,
+    dataType: 'json',
+    headers: {
+      'Accept': 'application/json'
+    },
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function(response) {
+      if (response.success) {
+        // Close the modal
+        $('#myModal').modal('hide');
+        // Reload the page or refresh the table
+        location.reload();
+      }
+    },
+    error: function(xhr) {
+      if (xhr.status === 422) {
+        // Validation error - re-render form with errors
+        const errors = xhr.responseJSON.errors;
+        
+        // Clear previous error styling
+        formElement.find('.form-control, .form-select').removeClass('is-invalid');
+        formElement.find('.invalid-feedback').remove();
+        
+        // Add new error styling
+        for (const field in errors) {
+          const fieldElement = formElement.find('[name="' + field + '"]');
+          fieldElement.addClass('is-invalid');
+          
+          // Add error message below the field
+          const errorDiv = $('<div class="invalid-feedback d-block"></div>');
+          errorDiv.html('<strong>' + errors[field][0] + '</strong>');
+          fieldElement.closest('.form-floating, .form-group').append(errorDiv);
+        }
+      } else {
+        console.error('Error:', xhr);
+        alert('Error al procesar el formulario');
+      }
+    }
+  });
+}
 
 /** Show a modal with the information of an url
  * 
@@ -86,6 +146,8 @@ function empresasMunicipio(){
         punto.municipio,
         punto.subsector,
         punto.sector,
+        punto.latitud,
+        punto.longitud,
       ]);
     });
     tblEmpresas.draw();

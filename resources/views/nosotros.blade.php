@@ -2,14 +2,6 @@
 
 @section('title', 'Acerca de Nosotros')
 
-@section('styles')
-  <style>
-    h1, h2, h3, h4, h5, h6 {
-      color: #007bff;
-    }
-  </style>
-@endsection
-
 @section('content')
   <!-- Header Menu and Whst is -->
   <header>

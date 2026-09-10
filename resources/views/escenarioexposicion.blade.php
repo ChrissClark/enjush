@@ -3,13 +3,9 @@
 @section('title', 'Escenario de Exposición')
 
 @section('styles')
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" rel="stylesheet">
 
   <style>
-    h1, h2, h3, h4, h5, h6 {
-      color: #007bff;
-    }
     #map {
       height: 800px;
       width: 100%;
@@ -84,7 +80,7 @@
           @foreach($sector->subsectores->sortBy('nombre') as $subsector)
             <a href="{{route('subsectores.show', [$subsector->id])}}">
               <figure class="figure text-center m-2 m-xl-3" style="width:300px;">
-                <img src="https://via.placeholder.com/300" class="figure-img img-fluid rounded-circle" alt="{{$subsector->nombre}}">
+                <img src="https://c.pxhere.com/images/21/ed/2b611ebd7850e7fd34bafef1aa84-1577053.jpg!d" srcset="https://c.pxhere.com/images/21/ed/2b611ebd7850e7fd34bafef1aa84-1577053.jpg!d" alt="la contaminación del aire, calentamiento global, máscara, doctor, proteccion, enfermedad, tóxico, médico, infección, mundo, influenza, cuidado, chemical warfare, ambiente, epidemia, gas, salud, prevención, niebla tóxica, clima, dibujos animados, trabajo, ilustración, persona de negocios, empleo, planta, conversacion, animación, trabajador de cuello blanco, administración, art, Fotos gratis In PxHere" class="figure-img img-fluid rounded-circle" alt="{{$subsector->nombre}}">
                 <figcaption class="figure-caption fs-5 text-center">{{$subsector->nombre}}</figcaption>
               </figure>
             </a>
@@ -109,6 +105,8 @@
             <th>Municipio</th>
             <th>Subsector</th>
             <th>Sector</th>
+            <th class="d-none">Latitud</th>
+            <th class="d-none">Longitud</th>
           </tr>
         </thead>
         <tbody>
@@ -118,6 +116,8 @@
               <th>{{$empresa->ubicacion()}}</th>
               <th>{{$empresa->subsector->sector->nombre}}</th>
               <th>{{$empresa->subsector->nombre}}</th>
+              <td class="d-none">{{$empresa->latitud}}</td>
+              <td class="d-none">{{$empresa->longitud}}</td>
             </tr>
           @endforeach
         </tbody>
@@ -224,44 +224,30 @@
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    //Anade una capa para los marcadores
+    // Añade una capa para los marcadores
     var layerGroup = L.layerGroup().addTo(map);
 
-    // Array de puntos desde la base de datos
-    var puntos = @json($empresas);
+    function updateMapMarkers(table) {
+      layerGroup.clearLayers();
 
-    // Variable para almacenar las coordenadas del polígono
-    //var coordenadasPoligono = [];
+      var rows = table.rows({ search: 'applied' }).data();
 
-    // Recorrer los puntos y agregarlos como vértices del polígono
-    puntos.forEach(function(punto) {
-        //coordenadasPoligono.push([punto.latitud, punto.longitud]);
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var lat = parseFloat(row[4]);
+        var lng = parseFloat(row[5]);
 
-        // Opcional: Si quieres seguir mostrando los marcadores junto con el polígono
-        L.circleMarker([punto.latitud, punto.longitud], {radius: 15})   //cambiar estos valores
+        if (!isNaN(lat) && !isNaN(lng)) {
+          L.circleMarker([lat, lng], { radius: 15 })
             .addTo(layerGroup)
-            .bindPopup(`<strong>${punto.id}</strong><br>Lat: ${punto.latitud}, Lon: ${punto.longitud}`);
-    });
+            .bindPopup(`<strong>${row[0]}</strong><br>Lat: ${lat}, Lon: ${lng}`);
+        }
+      }
 
-    // Crear el polígono con los puntos adyacentes
-    /*var poligono = L.polygon(coordenadasPoligono, {
-        color: 'blue', // Color del borde del polígono
-        fillColor: '#007bff', // Color de relleno
-        fillOpacity: 0.5 // Opacidad del relleno
-    }).addTo(map);*/
-
-    //coordenadasPoligono = [];
-    //coordenadasPoligono.push([41.8781, -87.6298], [32.7767, -96.7970], [25.7617, -80.1918]);
-    // Crear el polígono con los puntos adyacentes
-    /*var poligono = L.polygon(coordenadasPoligono, {
-        color: 'red', // Color del borde del polígono
-        fillColor: '#7b00ff', // Color de relleno
-        fillOpacity: 0.5 // Opacidad del relleno
-    }).addTo(map);
-    */
-    // Opcional: centrarse en el polígono
-    //map.fitBounds(poligono.getBounds());
-
+      /*if (layerGroup.getLayers().length > 0) {
+        map.fitBounds(layerGroup.getBounds(), { padding: [20, 20] });
+      }*/
+    }
   </script>
   
   <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
@@ -269,6 +255,16 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <script>
-    $("#Empresas").DataTable();
+    var tblEmpresas = $("#Empresas").DataTable({
+      columnDefs: [
+        { targets: [4, 5], visible: false, searchable: false }
+      ]
+    });
+
+    tblEmpresas.on('draw.dt', function() {
+      updateMapMarkers(tblEmpresas);
+    });
+
+    updateMapMarkers(tblEmpresas);
   </script>
 @endsection

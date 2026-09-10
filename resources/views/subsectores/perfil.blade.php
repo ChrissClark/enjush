@@ -4,9 +4,6 @@
 
 @section('styles')
   <style>
-    h1, h2, h3, h4, h5, h6 {
-      color: #007bff;
-    }
     #map {
       height: 400px;
       width: 100%;
@@ -62,7 +59,7 @@
             </div>
             <div class="py-3">
               <h2 class="fs-4">Localización</h2>
-              <div id="map"></div>
+              <!-- <div id="map"></div> -->
             </div>
             <div class="accordion my-3" id="AnPC-accor">
               <div class="accordion-item">

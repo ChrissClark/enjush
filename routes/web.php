@@ -13,7 +13,6 @@ use App\Http\Controllers\MatrizAmbientalController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ClasificacionController;
 use App\Http\Controllers\SustanciaController;
-//use App\Http\Controllers\SustClasificacionesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,38 +25,42 @@ use App\Http\Controllers\SustanciaController;
 |
 */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
+Route::middleware(['auth'])->group(function () {
+    Route::resource('estados', EstadoController::class)->only(['index', 'edit', 'update']);
+    Route::resource('municipios', MunicipioController::class)->except(['index', 'show']);
+    Route::resource('empresas', EmpresaController::class);
+    Route::resource('nras', EmpresaController::class);
+    Route::resource('sectores', SectorController::class);
+    Route::resource('subsectores', SubsectorController::class)->except(['show']);
+    Route::resource('sustancias', SustanciaController::class)->except(['show']);
+    Route::post('sustancias/{sustancia}/uploadPdf', [SustanciaController::class, 'uploadPdf'])->name('sustancias.uploadPdf');
+    Route::get('sustancias/{sustancia}/downloadPdf', [SustanciaController::class, 'downloadPdf'])->name('sustancias.downloadPdf');
+    Route::resource('evaluadores', EvaluadorController::class);
+    Route::resource('evaluaciones', EvaluacionController::class);
+    Route::get('empresas/{idEmpresa}/evaluacion', [EvaluacionController::class, 'evaluacionEmpresas'])->name('evaluacionEmpresas');
+    Route::resource('matriza', MatrizAmbientalController::class);
+    Route::get('evaluaciones/{idEvaluacion}/matriz', [MatrizAmbientalController::class, 'matrizEvaluacion'])->name('matrizEvaluacion');
+    Route::resource('instituciones', InstitucionController::class);
+    Route::resource('clasificaciones', ClasificacionController::class);
+    Route::resource('user', UserController::class);
+});
+
+
 Route::get('/nosotros', function(){return view('nosotros');})->name('nosotros');
-Route::get('/escenarioexposicion', [SectorController::class, 'escenariosExpocicion'])->name('escenarioexposicion');
-//Route::get('/perfil', function(){return view('perfil');})->name('perfil');
-Route::get('/recursos', function(){return view('recursos');})->name('recursos');
+//Route::get('/recursos', function(){return view('recursos');})->name('recursos');
 
-Route::resource('user', UserController::class);
-
-Route::resource('estados', EstadoController::class);
-Route::resource('municipios', MunicipioController::class);
-Route::resource('empresas', EmpresaController::class);
-Route::resource('nras', EmpresaController::class);
-Route::resource('sectores', SectorController::class);
-Route::resource('subsectores', SubsectorController::class);
-Route::resource('sustancias', SustanciaController::class);
-Route::resource('evaluadores', EvaluadorController::class);
-Route::resource('evaluaciones', EvaluacionController::class);
-Route::get('empresas/{idEmpresa}/evaluacion', [EvaluacionController::class, 'evaluacionEmpresas'])->name('evaluacionEmpresas');
-Route::resource('matriza', MatrizAmbientalController::class);
-Route::get('evaluaciones/{idEvaluacion}/matriz', [MatrizAmbientalController::class, 'matrizEvaluacion'])->name('matrizEvaluacion');
-Route::resource('instituciones', InstitucionController::class);
-Route::resource('clasificaciones', ClasificacionController::class);
-
-Route::get('municipo/{idMunicipio}/empresas', [MunicipioController::class, 'municipoEmpresas'])->name('municipoEmpresas');
-
+Route::get('/', [SectorController::class, 'escenariosExpocicion'])->name('escenarioexposicion');
 Route::get('/api/getPuntos', [SectorController::class, 'getPuntos']);
 
+// Estas rutas son para mostrar los puntos de ubicacion de los sectores, subsectores y sustancias en la vista de escenario de exposición
+Route::resource('subsectores', SubsectorController::class)->only(['show']);
+Route::resource('sustancias', SustanciaController::class)->only(['show']);
+Route::get('municipo/{idMunicipio}/empresas', [MunicipioController::class, 'municipoEmpresas'])->name('municipoEmpresas');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
+
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
 
 require __DIR__.'/auth.php';

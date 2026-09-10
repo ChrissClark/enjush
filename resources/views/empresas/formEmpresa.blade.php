@@ -1,22 +1,45 @@
 <div class="form-floating mb-3">
-  <input type="text" name="nombre" class="form-control" id="Nombre" placeholder="Nombre" maxlength="100" value="{{$empresa->nombre ?? old('nombre')}}">
+  <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" id="Nombre" placeholder="Nombre" maxlength="100" value="{{$empresa->nombre ?? old('nombre')}}">
   <label for="Nombre">Nombre</label>
+  @error('nombre')
+    <div class="invalid-feedback d-block">
+      <strong>{{ $message }}</strong>
+    </div>
+  @enderror
 </div>
-@error('nombre')
-  <span class="invalid-feedback" role="alert">
-    <strong>{{ $message }}</strong>
-  </span>
-@enderror
 
-<div class="form-floating mb-3">
-  <input type="text" name="NRA" class="form-control" id="NRA" placeholder="NRA" maxlength="20" value="{{$empresa->nras->last()->NRA ?? old('NRA')}}">
-  <label for="NRA">NRA</label>
+<div class="form-floating {{!$empresa->id ? 'collapse' : ''}}">
+  <select id="NRA_select" aria-label="Selecciona un NRA" class="form-select">
+    <option value="">Selecciona un NRA</option>
+    @if(!empty($empresa) && $empresa->nras)
+      @foreach($empresa->nras as $nra)
+        <option value="{{$nra->NRA}}" {{ old('NRA') == $nra->NRA || (empty(old('NRA')) && $loop->last) ? 'selected' : '' }}>{{$nra->NRA}}</option>
+      @endforeach
+    @endif
+  </select>
+  <label for="NRA_select">Selecciona un NRA</label>
 </div>
-@error('NRA')
-  <span class="invalid-feedback" role="alert">
-    <strong>{{ $message }}</strong>
-  </span>
-@enderror
+
+@if($empresa->id)
+  <div class="my-2 text-end">
+    <button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#NRA_field" aria-expanded="false" aria-controls="NRA_field"
+      onclick="nra = document.getElementById('NRA'); nra.focus(); if(!document.getElementById('NRA_field').classList.contains('show')){nra.value = '';}">
+      Agregar NRA
+    </button>
+  </div>
+@endif
+<div class="form-floating collapse {{!$empresa->id ? 'show' : ''}}" id="NRA_field">
+  <input type="text" id="NRA" name="NRA" class="form-control @error('NRA') is-invalid @enderror" placeholder="NRA" maxlength="20">
+  <label for="NRA">Agrega un nuevo NRA para esta empresa</label>
+  @error('NRA')
+    <div class="invalid-feedback d-block">
+      <strong>{{ $message }}</strong>
+    </div>
+  @enderror
+</div>
+
+
+<div class="w-100 border-top border-secondary-subtle my-4"></div>
 
 <div class="row g-2 mb-3">
   <h6>Ubicación</h6>
@@ -24,7 +47,7 @@
     <!-- Estados -->
     <div class="form-floating">
       <select id="Estado" name="idEstado" class="form-select @error('idEstado') is-invalid @enderror" aria-label="Selecciona un Estado" onchange="muestaMunicipios()">
-        <option @selected(old('idEstado'))>Selecciona tu Estado</option>
+        <option value="" @selected(old('idEstado'))>Selecciona tu Estado</option>
         @foreach($estados as $estado)
           @if($empresa->id && $estado->id == $empresa->municipio->estado->id)
             <option value="{{$estado->id}}" selected>{{$estado->nombre}}</option>
@@ -34,6 +57,11 @@
         @endforeach
       </select>
       <label for="Estado">Selecciona un Estado</label>
+      @error('idEstado')
+        <div class="invalid-feedback d-block">
+          <strong>{{ $message }}</strong>
+        </div>
+      @enderror
     </div>
   </div>
   <div class="col-md">
@@ -54,6 +82,11 @@
         @endforeach
       </select>
       <label for="Municipio">Selecciona un Municipio</label>
+      @error('idMunicipio')
+        <div class="invalid-feedback d-block">
+          <strong>{{ $message }}</strong>
+        </div>
+      @enderror
     </div>
   </div>
 </div>
@@ -74,6 +107,11 @@
         @endforeach
       </select>
       <label for="Sector">Selecciona un Sector</label>
+      @error('idSector')
+        <div class="invalid-feedback d-block">
+          <strong>{{ $message }}</strong>
+        </div>
+      @enderror
     </div>
   </div>
   <div class="col-md">
@@ -94,6 +132,11 @@
         @endforeach
       </select>
       <label for="Subsector">Selecciona un Subsector</label>
+      @error('idSubsector')
+        <div class="invalid-feedback d-block">
+          <strong>{{ $message }}</strong>
+        </div>
+      @enderror
     </div>
   </div>
 </div>
@@ -126,5 +169,6 @@
 
 <div class="text-center mt-2">
   <button class="btn btn-outline-primary btn-sm">{{empty($empresa->id) ? "Crear" : "Actualizar"}}</button>
+  <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
 </div>
 @csrf

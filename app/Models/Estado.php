@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Estado extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre', 'abreviacion'];
+    protected $fillable = ['nombre', 'abreviacion', 'visible'];
     public $timestamps = false;
 
     public function municipios(){

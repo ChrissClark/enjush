@@ -17,7 +17,7 @@ class ClasificacionController extends Controller
     {
         $clasificaciones = Clasificacion::all();
 
-        return view('clasificaciones', ['clasificaciones' => $clasificaciones]);
+        return view('clasificaciones.clasificaciones', ['clasificaciones' => $clasificaciones]);
     }
 
     /**
@@ -31,7 +31,7 @@ class ClasificacionController extends Controller
         $instituciones = Institucion::orderBy('nombre')->get();
         $footer = '';
         $cntnt = '<form action="'. route('clasificaciones.store').' "method="post">'.
-                    view('formClasificacion', ['clasificacion'=>$clasificacion, 'instituciones'=>$instituciones])->render() .'</form>';
+                    view('clasificaciones.formClasificacion', ['clasificacion'=>$clasificacion, 'instituciones'=>$instituciones])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -47,7 +47,7 @@ class ClasificacionController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->validateData();dd($data);
+        $data = $this->validateData();
         Clasificacion::create($data);
 
         return back();
@@ -76,7 +76,7 @@ class ClasificacionController extends Controller
         $instituciones = Institucion::orderBy('nombre')->get();
         $footer = '';
         $cntnt = '<form action="'. route('clasificaciones.update', $clasificacion->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formClasificacion', ['clasificacion'=>$clasificacion, 'instituciones'=>$instituciones])->render() .'</form>';
+                    view('clasificaciones.formClasificacion', ['clasificacion'=>$clasificacion, 'instituciones'=>$instituciones])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -108,9 +108,9 @@ class ClasificacionController extends Controller
      */
     public function destroy(Clasificacion $clasificacion)
     {
-        //$clasificacion->delte();
+        $clasificacion->delete();
 
-        //return back();
+        return back();
     }
 
     /** Valida los campos de una Clasificacion. */
@@ -118,6 +118,7 @@ class ClasificacionController extends Controller
         return request()->validate([
             'nombre' => 'required|string',
             'idInstitucion' => 'required|integer',
+            'descripcion' => 'nullable|string',
         ]);
     }
 }

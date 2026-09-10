@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Proyecto de Salud')</title>
 
     <!-- Bootstrap CSS -->
@@ -32,7 +33,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md sticky-top">
       <div class="container">
-        <a class="navbar-brand" href="#">ENJUSH</a>
+        <a class="navbar-brand" href="{{ route('home') }}">ENJUSH</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -41,7 +42,7 @@
             <li class="nav-item">
               <a class="nav-link" href="{{route('escenarioexposicion')}}">Escenario de Exposición</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#">Casos de Estudio</a>
             </li>
             <li class="nav-item dropdown">
@@ -66,44 +67,36 @@
                 <li><a class="dropdown-item" href="#">Anuncios</a></li>
                 <li><a class="dropdown-item" href="#">Solicitudes</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{route('recursos')}}">Publicaicones</a></li>
+                <li><a class="dropdown-item" href="#">Publicaicones</a></li>
                 <li><a class="dropdown-item" href="#">Videos</a></li>
               </ul>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a class="nav-link" href="{{route('nosotros')}}">Nosotros</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Admin
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{route('empresas.index')}}">Empresas</a></li>
-                <li><a class="dropdown-item" href="{{route('evaluaciones.index')}}">Evaluaciones</a></li>
-                <li><a class="dropdown-item" href="{{route('matriza.index')}}">Matriz Ambiental</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{route('sustancias.index')}}">Sustancias</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{route('sectores.index')}}">Sectores</a></li>
-                <li><a class="dropdown-item" href="{{route('subsectores.index')}}">Subsectores</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{route('clasificaciones.index')}}">Clasificaciones</a></li>
-                <li><a class="dropdown-item" href="{{route('instituciones.index')}}">Instituciones</a></li>
-                <li><a class="dropdown-item" href="{{route('evaluadores.index')}}">Evaluadores</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{route('estados.index')}}">Ubicación</a></li>
-              </ul>
-            </li>
             @if(Route::has('login'))
               @auth
-                <!-- Algun menu especial con auth -->
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{Auth::user()->name}}
+                    Admin {{Auth::user()->name}}
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">{{Auth::user()->email}}</a></li>
+                    <li><a class="dropdown-item" href="{{route('empresas.index')}}">Empresas</a></li>
+                    <li><a class="dropdown-item" href="{{route('evaluaciones.index')}}">Evaluaciones</a></li>
+                    <li><a class="dropdown-item" href="{{route('matriza.index')}}">Matriz Ambiental</a></li>
                     <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('sustancias.index')}}">Sustancias</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('sectores.index')}}">Sectores</a></li>
+                    <li><a class="dropdown-item" href="{{route('subsectores.index')}}">Subsectores</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('clasificaciones.index')}}">Clasificaciones</a></li>
+                    <li><a class="dropdown-item" href="{{route('instituciones.index')}}">Instituciones</a></li>
+                    <li><a class="dropdown-item" href="{{route('evaluadores.index')}}">Evaluadores</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('estados.index')}}">Ubicación</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">{{Auth::user()->email}}</a></li>
                     <li>
                       <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -161,6 +154,9 @@
         </div>
         <div>
           <p class="text-center mt-2">As a national organization, our work extends across borders into many Indigenous lands throughout Canada. We gratefully acknowledge that our host institution, the University of British Columbia Point Grey campus, is located on the traditional, ancestral and unceded territories of the xʷməθkʷəy̓əm (Musqueam) people.</p>
+        </div>
+        <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
+          Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) by Chriss Clark
         </div>
       </div>
     </footer>

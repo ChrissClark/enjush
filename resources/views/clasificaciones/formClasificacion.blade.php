@@ -7,6 +7,15 @@
     <strong>{{ $message }}</strong>
   </span>
 @enderror
+<div class="form-floating mb-3">
+  <textarea id="Descripcion" name="descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$clasificacion->descripcion ?? old('descripcion')}}</textarea>
+  <label for="Descripcion">Descripción</label>
+</div>
+@error('descripcion')
+  <span class="invalid-feedback" role="alert">
+    <strong>{{ $message }}</strong>
+  </span>
+@enderror
 
 <div class="form-floating">
   <select id="Institucion" name="idInstitucion" class="form-select @error('idInstitucion') is-invalid @enderror" aria-label="Selecciona una clasificación">
@@ -18,7 +27,7 @@
       @endif
     @endforeach
   </select>
-  <label for="cla$institucion">Selecciona un Institución</label>
+  <label for="$idInstitucion">Selecciona un Institución</label>
 </div>
 @error('idInstitucion')
   <span class="invalid-feedback" role="alert">

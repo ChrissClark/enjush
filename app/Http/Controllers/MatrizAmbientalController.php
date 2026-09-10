@@ -18,7 +18,7 @@ class MatrizAmbientalController extends Controller
     {
         $matriz = MatrizAmbiental::all();
 
-        return view('matriz_ambiental', ['matriz_ambiental' => $matriz]);
+        return view('matriz_ambiental.matriz_ambiental', ['matriz_ambiental' => $matriz]);
     }
 
     /**
@@ -33,7 +33,7 @@ class MatrizAmbientalController extends Controller
         $sustancias = Sustancia::all();
         $footer = '';
         $cntnt = '<form action="'. route('matriza.store').' "method="post">'.
-                    view('formMatrizAmbiental', ['matriz' => $matriz, 'evaluacion' => $evaluacion, 'sustancias' => $sustancias])->render() .'</form>';
+                    view('matriz_ambiental.formMatrizAmbiental', ['matriz' => $matriz, 'evaluacion' => $evaluacion, 'sustancias' => $sustancias])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -42,7 +42,7 @@ class MatrizAmbientalController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a validated and newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -79,7 +79,7 @@ class MatrizAmbientalController extends Controller
         $sustancias = Sustancia::all();
         $footer = '';
         $cntnt = '<form action="'. route('matriza.update', $matrizAmbiental->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formMatrizAmbiental', ['matriz'=>$matrizAmbiental, 'evaluacion' => $evaluacion, 'sustancias'=>$sustancias])->render() .'</form>';
+                    view('matriz_ambiental.formMatrizAmbiental', ['matriz'=>$matrizAmbiental, 'evaluacion' => $evaluacion, 'sustancias'=>$sustancias])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -94,9 +94,10 @@ class MatrizAmbientalController extends Controller
      * @param  \App\Models\MatrizAmbiental  $matrizAmbiental
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MatrizAmbiental $matrizAmbiental)
+    public function update(Request $request, $matrizAmbiental)
     {
-        $data = $this->validateData();dd($data, $matrizAmbiental);
+        $data = $this->validateData();
+        $matrizAmbiental = MatrizAmbiental::find($matrizAmbiental);
         $matrizAmbiental->update($data);
 
         return back();
@@ -108,9 +109,12 @@ class MatrizAmbientalController extends Controller
      * @param  \App\Models\MatrizAmbiental  $matrizAmbiental
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MatrizAmbiental $matrizAmbiental)
+    public function destroy($matrizAmbiental)
     {
-        //
+        $matrizAmbiental = MatrizAmbiental::find($matrizAmbiental);
+        $matrizAmbiental->delete();
+
+        return back();
     }
 
     /** Validate the fields of a Estado. */
@@ -120,6 +124,13 @@ class MatrizAmbientalController extends Controller
             'idEvaluacion' => 'required|integer',
             'matriz' => 'required|string',
             'valor' => 'required|numeric',
+        ],
+        [
+            'idSustancia.required' => 'El campo Sustancia es obligatorio.',
+            'idEvaluacion.required' => 'El campo Evaluación es obligatorio.',
+            'matriz.required' => 'El campo Matriz es obligatorio.',
+            'valor.required' => 'El campo Valor es obligatorio.',
+            'valor.numeric' => 'El campo Valor debe ser un número.',
         ]);
     }
 
@@ -127,6 +138,6 @@ class MatrizAmbientalController extends Controller
     public function matrizEvaluacion($idEvaluacion){
         $evaluacion = Evaluacion::find($idEvaluacion);
         
-        return view('matriz_ambiental_evaluacion', ['evaluacion' => $evaluacion]);
+        return view('matriz_ambiental.matriz_ambiental_evaluacion', ['evaluacion' => $evaluacion]);
     }
 }

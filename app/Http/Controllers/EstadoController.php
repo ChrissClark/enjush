@@ -18,7 +18,7 @@ class EstadoController extends Controller
         $estados = Estado::all();
         $municipios = Municipio::all();
 
-        return view('estados', ['estados' => $estados, 'municipios' => $municipios]);
+        return view('ubicacion.estados', ['estados' => $estados, 'municipios' => $municipios]);
     }
 
     /**
@@ -63,7 +63,7 @@ class EstadoController extends Controller
     {
         $footer = '';
         $cntnt = '<form action="'. route('estados.update', $estado->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formEstado', ['estado'=>$estado])->render() .'</form>';
+                    view('ubicacion.formEstado', ['estado'=>$estado])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -80,6 +80,7 @@ class EstadoController extends Controller
      */
     public function update(Request $request, Estado $estado)
     {
+        $request->merge(['visible' => $request->has('visible') ? 1 : 0]);
         $data = $this->validateData();
         $estado->update($data);
 
@@ -101,6 +102,7 @@ class EstadoController extends Controller
     protected function validateData(){
         return request()->validate([
             'abreviacion' => 'required|string',
+            'visible' => 'boolean',
         ]);
     }
 }

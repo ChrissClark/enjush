@@ -20,7 +20,7 @@ class SectorController extends Controller
     {
         $sectores = Sector::all();
 
-        return view('sectores', ['sectores' => $sectores]);
+        return view('sectores.sectores', ['sectores' => $sectores]);
     }
 
     /**
@@ -33,7 +33,7 @@ class SectorController extends Controller
         $sector = new Sector();
         $footer = '';
         $cntnt = '<form action="'. route('sectores.store').' "method="post">'.
-                    view('formSector', ['sector'=>$sector])->render() .'</form>';
+                    view('sectores.formSector', ['sector'=>$sector])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -49,7 +49,7 @@ class SectorController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->validateData();dd($data);
+        $data = $this->validateData();
         Sector::create($data);
 
         return back();
@@ -77,7 +77,7 @@ class SectorController extends Controller
         $sector = Sector::find($idSector);
         $footer = '';
         $cntnt = '<form action="'. route('sectores.update', $sector->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formSector', ['sector'=>$sector])->render() .'</form>';
+                    view('sectores.formSector', ['sector'=>$sector])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -102,49 +102,50 @@ class SectorController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified sector from storage.
      *
      * @param  \App\Models\Sector  $sector
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sector $sector)
+    public function destroy($idSector)
     {
-        //$sector->delte();
+        $sector = Sector::find($idSector);
+        $sector->delete();
 
-        //return back();
+        return back();
     }
 
-    /** Valida los campos de un Sector. */
+    /** Valida los campos de un Sector. Regresa los mensajes de error. */
     protected function validateData(){
         return request()->validate([
             'nombre' => 'required|string',
             'descripcion' => 'nullable|string',
+        ],
+        [
+            'nombre.required' => 'El nombre del sector es obligatorio.',
+            'nombre.string' => 'El nombre del sector debe ser una cadena de texto.',
+            'descripcion.string' => 'La descripción del sector debe ser una cadena de texto.',
         ]);
     }
     
-
+    /** Obtiene la información de las empresas para el mapa en la vista de escenario de exposición */
     public function escenariosExpocicion(){
-        /*//dd(Empresa::select('id', 'nombre', 'idMunicipio', 'idSubsector', 'latitud', 'longitud')->get()->toJSON());
-        return view('map');*/
         $estados = Estado::all();
         $sectores = Sector::all();
         $empresas = Empresa::all();
-        //$concentraciones = DB::select();
-        //$idsSubsectores = Subsector::whereIn('idSector', $sectores->pluck('id'))->pluck('id');
-        //$puntos = Punto::whereIn('idSubsector', $idsSubsectores)->get();
 
         return view('escenarioexposicion', ['estados' => $estados, 'sectores' => $sectores, 'empresas' => $empresas]); 
     }
 
-    // Obtener puntos para DataTables
+    // Obtener puntos de las empresas para DataTables
     public function getPuntos(Request $request)
-    {//dd("Entrando");
+    {
         return Empresa::select('id', 'nombre', 'idMunicipio', 'idSubsector', 'latitud', 'longitud')->get()->toJSON();
     }
 
     // Obtener puntos dentro de un área (Lazy Loading para Leaflet)
     public function getPolygonsByBounds(Request $request)
-    {//dd("Entrando Leaflet");
+    {
         $northEast = explode(',', $request->northEast);
         $southWest = explode(',', $request->southWest);
 

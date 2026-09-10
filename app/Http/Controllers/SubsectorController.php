@@ -17,7 +17,7 @@ class SubsectorController extends Controller
     {
         $subsectores = Subsector::all();
 
-        return view('subsectores', ['subsectores' => $subsectores]);
+        return view('subsectores.subsectores', ['subsectores' => $subsectores]);
     }
 
     /**
@@ -31,7 +31,7 @@ class SubsectorController extends Controller
         $sectores = Sector::all();
         $footer = '';
         $cntnt = '<form action="'. route('subsectores.store').' "method="post">'.
-                    view('formSubsector', ['subsector'=>$subsector, 'sectores' => $sectores])->render() .'</form>';
+                    view('subsectores.formSubsector', ['subsector'=>$subsector, 'sectores' => $sectores])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -63,7 +63,7 @@ class SubsectorController extends Controller
     {
         $subsector = Subsector::find($idSubsector);
 
-        return view('perfil', ['subsector' => $subsector]);
+        return view('subsectores.perfil', ['subsector' => $subsector]);
     }
 
     /**
@@ -78,7 +78,7 @@ class SubsectorController extends Controller
         $sectores = Sector::all();
         $footer = '';
         $cntnt = '<form action="'. route('subsectores.update', $subsector->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formSubsector', ['subsector'=>$subsector, 'sectores' => $sectores])->render() .'</form>';
+                    view('subsectores.formSubsector', ['subsector'=>$subsector, 'sectores' => $sectores])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -108,11 +108,12 @@ class SubsectorController extends Controller
      * @param  \App\Models\Subsector  $subsector
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subsector $subsector)
+    public function destroy($idSubsector)
     {
-        //$subsector->delte();
+        $subsector = Subsector::find($idSubsector);
+        $subsector->delete();
 
-        //return back();
+        return back();
     }
 
     /** Valida los campos de un Subsector. */

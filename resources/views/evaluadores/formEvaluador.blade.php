@@ -1,5 +1,5 @@
 <div class="form-floating mb-3">
-  <input type="text" name="nombre" class="form-control" id="Nombre" placeholder="Nombre" maxlength="100" value="{{$sustancia->nombre ?? old('nombre')}}">
+  <input type="text" name="nombre" class="form-control" id="Nombre" placeholder="Nombre" maxlength="100" value="{{$evaluador->nombre ?? old('nombre')}}">
   <label for="Nombre">Nombre</label>
 </div>
 @error('nombre')
@@ -8,7 +8,7 @@
   </span>
 @enderror
 <div class="form-floating mb-3">
-  <textarea id="Descripcion" name="Descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$sustancia->descripcion ?? old('descripcion')}}</textarea>
+  <textarea id="Descripcion" name="descripcion" class="form-control" placeholder="Descripción" style="height: 100px">{{$evaluador->descripcion ?? old('descripcion')}}</textarea>
   <label for="Descripcion">Descripción</label>
 </div>
 @error('descripcion')
@@ -16,7 +16,8 @@
     <strong>{{ $message }}</strong>
   </span>
 @enderror
+
 <div class="text-center mt-2">
-    <button class="btn btn-outline-primary btn-sm">{{empty($sustancia->id) ? "Crear" : "Actualizar"}}</button>
+    <button class="btn btn-outline-primary btn-sm">{{empty($evaluador->id) ? "Crear" : "Actualizar"}}</button>
 </div>
 @csrf

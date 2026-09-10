@@ -18,7 +18,7 @@ class EvaluacionController extends Controller
     {
         $evaluaciones = Evaluacion::all();
 
-        return view('evaluaciones', ['evaluaciones' => $evaluaciones]);
+        return view('evaluaciones.evaluaciones', ['evaluaciones' => $evaluaciones]);
     }
 
     /**
@@ -32,7 +32,7 @@ class EvaluacionController extends Controller
         $evaluadores = Evaluador::all();
         $footer = '';
         $cntnt = '<form action="'. route('evaluaciones.store').' "method="post">'.
-                    view('formEvaluacion', ['evaluacion'=>$evaluacion, 'evaluadores'=>$evaluadores, 'idEmpresa'=>request()->idEmpresa])->render() .'</form>';
+                    view('evaluaciones.formEvaluacion', ['evaluacion'=>$evaluacion, 'evaluadores'=>$evaluadores, 'idEmpresa'=>request()->idEmpresa])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -79,7 +79,7 @@ class EvaluacionController extends Controller
         $idEmpresa = $evaluacion->idEmpresa;
         $footer = '';
         $cntnt = '<form action="'. route('evaluaciones.update', $evaluacion->id).' "method="post"> <input type="hidden" name="_method" value="PATCH">'.
-                    view('formEvaluacion', ['evaluacion'=>$evaluacion, 'evaluadores'=>$evaluadores, 'idEmpresa'=>$idEmpresa])->render() .'</form>';
+                    view('evaluaciones.formEvaluacion', ['evaluacion'=>$evaluacion, 'evaluadores'=>$evaluadores, 'idEmpresa'=>$idEmpresa])->render() .'</form>';
         
         return response()->json([
             'bodyContent' => $cntnt,
@@ -94,11 +94,12 @@ class EvaluacionController extends Controller
      * @param  \App\Models\Evaluacion  $evaluacion
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Evaluacion $evaluacion)
+    public function update(Request $request, $idEvaluacion)
     {
+        $evaluacion = Evaluacion::find($idEvaluacion);
         $data = $this->validateData();
         $data['matriz'] = json_encode(array_map('trim', explode(",", $data['matriz'])));
-        dd($data, $evaluacion);$evaluacion->update($data);
+        $evaluacion->update($data);
 
         return back();
     }
@@ -109,9 +110,12 @@ class EvaluacionController extends Controller
      * @param  \App\Models\Evaluacion  $evaluacion
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Evaluacion $evaluacion)
+    public function destroy($idEvaluacion)
     {
-        //
+        $evaluacion = Evaluacion::find($idEvaluacion);
+        $evaluacion->delete();
+
+        return back();
     }
 
     /** Validate the fields of a Estado. */
@@ -122,13 +126,21 @@ class EvaluacionController extends Controller
             'matriz' => 'required|string',
             'año' => 'digits:4',
             'unidad' => 'required|string',
+        ],
+        [
+            'idEvaluador.required' => 'El campo Evaluador es obligatorio.',
+            'idEmpresa.required' => 'El campo Empresa es obligatorio.',
+            'matriz.required' => 'La Matriz es obligatoria.',
+            'año.digits' => 'El campo Año debe tener 4 dígitos.',
+            'unidad.required' => 'El campo Unidad es obligatorio.',
         ]);
     }
+    
 
     /** Muestra las evaluaciones de una empresa */
     public function evaluacionEmpresas($idEmpresa){
         $empresa = Empresa::find($idEmpresa);
         
-        return view('empresa_evaluaciones', ['empresa' => $empresa]);
+        return view('evaluaciones.empresa_evaluaciones', ['empresa' => $empresa]);
     }
 }

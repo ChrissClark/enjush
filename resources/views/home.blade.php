@@ -152,7 +152,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
-      // Crear el mapa y centrarlo en coordenadas predeterminadas
+      // Crear el mapa y centrarlo en coordenadas deseadas (por ejemplo, San Luis Potosí)
       var map = L.map('map').setView([22.1521, -100.9733], 6); // SLP como centro
 
       // Añadir capa de mapa de OpenStreetMap
@@ -161,7 +161,7 @@
       }).addTo(map);
 
       // Array de puntos desde la base de datos
-      var puntos = @json($empresas);
+      var puntos = []; // @ json($empresas);
 
       // Variable para almacenar las coordenadas del polígono
       var coordenadasPoligono = [];
